@@ -16,7 +16,7 @@ pin.exe -t PEArtefacts.dll -o "TraceLog.out" -- Test.exe
 
 **Example command-line for "dll":**
 
-pin.exe -t PEArtefacts.dll -m "somedll" -o "ModuleTraceLog.out" -- regsvr32.exe SomeDll.dll
+pin.exe -t PEArtefacts.dll -m "somedll" -o "TraceLog.out" -- regsvr32.exe SomeDll.dll
 
 ### Sample Output [ For call trace ]:
 ```
