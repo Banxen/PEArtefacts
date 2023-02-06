@@ -19,7 +19,7 @@ pin.exe -t PEArtefacts.dll -o "TraceLog.out" -- Test.exe
 
 pin.exe -t PEArtefacts.dll -m "somedll" -o "TraceLog.out" -- regsvr32.exe SomeDll.dll
 
-### Sample Output [ For call trace ]:
+### Sample Output [ For API calls ]:
 ```
 Section, Base.RVA, API
 code, 0x400000.1492, user32.GetSystemMetrics+0
@@ -38,7 +38,7 @@ code, 0x400000.118c, user32.LoadImageA+0
 code, 0x400000.119a, user32.RegisterClassExA+0
 ```
 
-### Sample Output [ For module (un)load trace ]:
+### Sample Output [ For module loading and unloading ]:
 ```
 Load: C:\Windows\SysWOW64\KernelBase.dll
 Load: C:\Windows\SysWOW64\kernel32.dll
