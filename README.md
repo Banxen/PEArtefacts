@@ -1,20 +1,21 @@
 # PEArtefacts
 PEArtefacts is a pintool to log following information during a PE execution:
 
-1. Windows API calls and calls to runtime generated code. Additionally, one can generate logs for some specific module inside the given PE provided the module name is specified in **lowercase with/without the extension** on the command-line. Default output file name used is "APItrace.out"
-2. (Un)Load of modules during runtime with full path. Default output file name used is "ModuleTrace.out"
+1. Windows API calls from the specified module. Default module is the main executable file. Default output file name is "APItrace.out"
+2. Calls to runtime generated code such as Shellcode. Default output file name is "APItrace.out"
+3. Loading and Unloading of modules during runtime with full path. Default output file name is "ModuleTrace.out"
 
-**Note:** You can also specify your own name for the output log files on the command-line.
+**Note:** You can also specify your own file name for the log files within the command-line.
 
 ### Usage:
 
 pin.exe -t PEArtefacts.dll [-m "ModuleName"] [-o "CallTraceLogs"] [-mo "ModuleTraceLogs"] -- executable [arguments]
 
-**Example command-line for "exe":**
+**Example command-line:**
 
 pin.exe -t PEArtefacts.dll -o "TraceLog.out" -- Test.exe
 
-**Example command-line for "dll":**
+**Example command-line for logging information about specific module:**
 
 pin.exe -t PEArtefacts.dll -m "somedll" -o "TraceLog.out" -- regsvr32.exe SomeDll.dll
 
