@@ -5,7 +5,7 @@ PEArtefacts is a pintool which does following operations during a PE execution:
 2. Hook specified Windows APIs and log specified number of API arguments. The API name and number of arguments to be logged is configured in a text file which is passed using command-line parameter. 
 3. Log calls to runtime generated code such as Shellcode. Default output file name is "APITrace.out"
 4. Log full path of modules loaded and unloaded during execution. Default output file name is "ModuleTrace.out"
-5. Dump and log dump information for interesting runtime allocated memory sections with a possibility that these sections contains some form of unpacked code. Default output file name is "DumpTrace.out"
+5. Dump and log dump information for interesting runtime allocated memory sections with a possibility that these sections contain some form of unpacked code. Default output file name is "DumpTrace.out"
 
 **Note:** 
 
