@@ -15,7 +15,7 @@ PEArtefacts is a pintool which does following operations during a PE execution:
 
 ### Usage:
 
-pin.exe -t PEArtefacts.dll [-m "ModuleName"]  [-f HookAPIs.txt] [-b APIsBlacklist.txt] [-o "APITrace.out"] [-mo "ModuleTrace.out"] [-do DumpTrace.out] -- executable [arguments]
+pin.exe -t PEArtefacts.dll [-m "ModuleName"]  [-f HookAPIs.txt] [-b BlacklistAPIs.txt] [-o "APITrace.out"] [-mo "ModuleTrace.out"] [-do DumpTrace.out] -- executable [arguments]
 
 **Example command-line:**
 
