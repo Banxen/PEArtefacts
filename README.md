@@ -1,15 +1,20 @@
 # PEArtefacts
-PEArtefacts is a pintool to log following information during a PE execution:
+PEArtefacts is a pintool which does following operations during a PE execution:
 
-1. Windows API calls from the specified module. Default module is the main executable file. Default output file name is "APItrace.out"
-2. Calls to runtime generated code such as Shellcode. Default output file name is "APItrace.out"
-3. Loading and Unloading of modules during runtime with full path. Default output file name is "ModuleTrace.out"
+1. Log Windows API calls from the specified module. Default module is the main executable file.
+2. Hook specified Windows APIs and log specified number of API arguments. The API name and number of arguments to be logged is configured in a text file which is passed using command-line parameter. 
+3. Log calls to runtime generated code such as Shellcode. Default output file name is "APITrace.out"
+4. Log full path of modules loaded and unloaded during execution. Default output file name is "ModuleTrace.out"
+5. Dump and log dump information for interesting runtime allocated memory sections with a possiblity that these sections contains some form of unpacked code. Default output file name is DumpTrace.out"
 
-**Note:** You can also specify your own file name for the log files within the command-line.
+**Note:** 
+
+1. You can specify your own file name for the log files within the command-line. Additionally, a blacklist of Windows API names can be passed using a text file to exclude specific APIs from logging (Helps to remove some noisy APIs).
+2. Sample HookAPIs.txt and APIs-Blacklist.txt are provided along with the project.
 
 ### Usage:
 
-pin.exe -t PEArtefacts.dll [-m "ModuleName"] [-o "CallTraceLogs"] [-mo "ModuleTraceLogs"] -- executable [arguments]
+pin.exe -t PEArtefacts.dll [-m "ModuleName"]  [-f HookAPIs.txt] [-b APIsBlacklist.txt] [-o "APITrace.out"] [-mo "ModuleTrace.out"] [-do DumpTrace.out] -- executable [arguments]
 
 **Example command-line:**
 
@@ -17,7 +22,7 @@ pin.exe -t PEArtefacts.dll -o "TraceLog.out" -- Test.exe
 
 **Example command-line for logging information about specific module:**
 
-pin.exe -t PEArtefacts.dll -m "somedll" -o "TraceLog.out" -- regsvr32.exe SomeDll.dll
+pin.exe -t PEArtefacts.dll -m "somedll.dll" -o "TraceLog.out" -- regsvr32.exe SomeDll.dll
 
 ### Sample Output [ For API calls ]:
 ```
@@ -49,8 +54,8 @@ Load: C:\Windows\SysWOW64\sechost.dll
 ```
 
 ### Build steps:
-1. Download [Intel PIN](https://software.intel.com/content/www/us/en/develop/articles/pin-a-binary-instrumentation-tool-downloads.html) [Intel Pin 3.16 was used while creating this tool]
+1. Download [Intel PIN](https://software.intel.com/content/www/us/en/develop/articles/pin-a-binary-instrumentation-tool-downloads.html) [Intel Pin 3.24 was used while creating this tool]
 2. Create a folder with the name PEArtefacts inside **%pin_root_dir%\source\tools**
 3. Put the files from the project inside the folder created in Step 2
 4. Open the project with Visual Studio **(PEArtefacts.vcxproj)** [Visual Studio 2017 was used while creating this tool]
-5. Compile the project by selecting Release|x32 or Release|x64
+5. Compile the project by selecting Release|x32 for 32-bit version of PEArtefacts and Release|x64 for 64-bit version of PEArtefacts
