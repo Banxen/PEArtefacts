@@ -5,12 +5,13 @@ PEArtefacts is a pintool which does following operations during a PE execution:
 2. Hook specified Windows APIs and log specified number of API arguments. The API name and number of arguments to be logged is configured in a text file which is passed using command-line parameter. 
 3. Log calls to runtime generated code such as Shellcode. Default output file name is "APITrace.out"
 4. Log full path of modules loaded and unloaded during execution. Default output file name is "ModuleTrace.out"
-5. Dump and log dump information for interesting runtime allocated memory sections with a possiblity that these sections contains some form of unpacked code. Default output file name is DumpTrace.out"
+5. Dump and log dump information for interesting runtime allocated memory sections with a possibility that these sections contains some form of unpacked code. Default output file name is "DumpTrace.out"
 
 **Note:** 
 
 1. You can specify your own file name for the log files within the command-line. Additionally, a blacklist of Windows API names can be passed using a text file to exclude specific APIs from logging (Helps to remove some noisy APIs).
 2. Sample HookAPIs.txt and APIs-Blacklist.txt are provided along with the project.
+3. All the log files and section dumps will be saved in the CWD of PEArtefacts.
 
 ### Usage:
 
@@ -27,30 +28,56 @@ pin.exe -t PEArtefacts.dll -m "somedll.dll" -o "TraceLog.out" -- regsvr32.exe So
 ### Sample Output [ For API calls ]:
 ```
 Section, Base.RVA, API
-code, 0x400000.1492, user32.GetSystemMetrics+0
-code, 0x400000.14a8, user32.SystemParametersInfoA+0
-code, 0x400000.14b9, user32.SystemParametersInfoA+0
-code, 0x400000.14c2, user32.GetSysColor+0
-code, 0x400000.14cf, user32.GetSysColor+0
-code, 0x400000.14dc, user32.GetSysColor+0
-code, 0x400000.14e9, user32.GetSysColor+0
-code, 0x400000.14f6, user32.GetSysColor+0
-code, 0x400000.10ee, kernel32.GetModuleHandleA+0
-code, 0x400000.1116, COMCTL32.InitCommonControlsEx+0
-code, 0x400000.1143, user32.LoadImageA+0
-code, 0x400000.115e, user32.LoadImageA+0
-code, 0x400000.118c, user32.LoadImageA+0
-code, 0x400000.119a, user32.RegisterClassExA+0
+.text, 0xfd0000.1045, kernel32.CreateFileA+0
+                            Arg[0]: 0x00600240 -> "popup32.exe"
+                            Arg[1]: 0x00000001
+                            Arg[2]: 0x00000001
+                            Arg[3]: NULL
+                            Arg[4]: 0x00000003
+                            Return Value: 0x1
+.text, 0xfd0000.1058, kernel32.GetFileSize+0
+                            Arg[0]: 0x00000128
+                            Arg[1]: NULL
+                            Return Value: 0x800
+.text, 0xfd0000.106e, kernel32.ReadFile+0
+                            Arg[0]: 0x00000128
+                            Arg[1]: 0x00fe5360 -> {0x 0x 0x 0x 0x 0x 0x 0x 0x 0x }
+                            Arg[2]: 0x00000800
+                            Arg[3]: 0x00fe52b8 -> {0x 0x 0x 0x 0x 0x 0x 0x 0x 0x }
+                            Arg[4]: NULL
+                            Return Value: 0x1
+.text, 0xfd0000.1081, kernel32.VirtualAlloc+0
+                            Arg[0]: NULL
+                            Arg[1]: 0x00000801
+                            Arg[2]: 0x00001000
+                            Arg[3]: 0x00000040
+                            Return Value: 0xca00000
+.text, 0xfd0000.10a0, kernel32.IsDebuggerPresent+0
+.shellcode, 0xfd0000.10b7, 0xca00000.0
+.shellcode, 0xca00000.c2, kernel32.LoadLibraryA+0
+                            Arg[0]: 0x0ca000b6 -> "user32.dll"
+                            Return Value: 0x1
+.shellcode, 0xca00000.dd, kernel32.GetProcAddress+0
+                            Arg[0]: 0x76ef0000 -> "MZ"
+                            Arg[1]: 0x0ca000cd -> "MessageBoxW"
+                            Return Value: 0x76f71820
 ```
 
 ### Sample Output [ For module loading and unloading ]:
 ```
-Load: C:\Windows\SysWOW64\KernelBase.dll
-Load: C:\Windows\SysWOW64\kernel32.dll
-Load: C:\Windows\SysWOW64\ntdll.dll
+Load: C:\Windows\SysWOW64\ws2_32.dll
+Load: C:\Windows\SysWOW64\SHCore.dll
+Load: C:\Windows\SysWOW64\ntmarta.dll
+Load: C:\Windows\SysWOW64\WinTypes.dll
 Load: C:\Windows\SysWOW64\advapi32.dll
-Load: C:\Windows\SysWOW64\msvcrt.dll
-Load: C:\Windows\SysWOW64\sechost.dll
+Load: C:\Windows\SysWOW64\ole32.dll
+Unload: C:\Windows\SysWOW64\KernelBase.dll
+Unload: C:\Windows\SysWOW64\kernel32.dll
+Unload: C:\Windows\SysWOW64\ntdll.dll
+Unload: C:\Windows\SysWOW64\apphelp.dll
+Unload: C:\Windows\SysWOW64\user32.dll
+Unload: C:\Windows\SysWOW64\win32u.dll
+Unload: C:\Windows\SysWOW64\gdi32.dll
 ```
 
 ### Build steps:
