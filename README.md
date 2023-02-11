@@ -10,7 +10,7 @@ PEArtefacts is a pintool which does following operations during a PE execution:
 **Note:** 
 
 1. You can specify your own file name for the log files within the command-line. Additionally, a blacklist of Windows API names can be passed using a text file to exclude specific APIs from logging (Helps to remove some noisy APIs).
-2. Sample HookAPIs.txt and APIs-Blacklist.txt are provided along with the project.
+2. Sample HookAPIs.txt and BlacklistAPIs.txt are provided along with the project.
 3. All the log files and section dumps will be saved in the CWD of PEArtefacts.
 
 ### Usage:
