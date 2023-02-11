@@ -2,14 +2,25 @@
 #include "Declarations.h"
 #include "TraceCall.h"
 #include "Log.h"
+#include "Dump.h"
 
 ADDRINT pageStartAddress = 0;
 
 string ExtractImageName(string imageNamePath) {
-	unsigned int imageNameOffset = imageNamePath.find_last_of("\\") + 1;
-	unsigned int dotOffset = imageNamePath.find_last_of(".");
+	size_t imageNameOffset = imageNamePath.find_last_of("\\") + 1;
+	size_t dotOffset = imageNamePath.find_last_of(".");
 
 	return imageNamePath.substr(imageNameOffset, dotOffset - imageNameOffset);
+}
+
+VOID CheckAndDump(ADDRINT address) {
+	PALLOCATION_INFO foundAllocation = NULL;
+
+	foundAllocation = CheckAllocation(address, 0xffffffff);
+
+	if (foundAllocation != NULL) {
+		GenerateDump(foundAllocation->allocationAddress, foundAllocation->allocationSize);
+	}
 }
 
 VOID TraceCall(const ADDRINT callFrom, const ADDRINT callTo) {
@@ -27,7 +38,7 @@ VOID TraceCall(const ADDRINT callFrom, const ADDRINT callTo) {
 
 	if (IMG_Valid(callFromImg)) {
 		if (IMG_Valid(callToImg)) {
-			if ((IMG_Name(callFromImg).find(moduleToTrack) != string::npos)) {
+			if (IMG_Name(callFromImg).find(moduleToTrack) != string::npos) {
 				if (IMG_Name(callToImg).find(moduleToTrack) == string::npos) { // Call is not within the same module
 					if (callToRoutine != RTN_Invalid()) {
 						if (callFromRoutine != RTN_Invalid()) { // Call is from a valid routine to a valid routine
@@ -85,6 +96,8 @@ VOID TraceCall(const ADDRINT callFrom, const ADDRINT callTo) {
 					pageStartAddress,
 					callTo - pageStartAddress
 				);
+
+				CheckAndDump(callTo);
 			}
 		}
 	}
@@ -94,6 +107,7 @@ VOID TraceCall(const ADDRINT callFrom, const ADDRINT callTo) {
 				if (IMG_Name(callToImg).find(moduleToTrack) == string::npos) { // Valid module is not the specified module [Just not logging call from runtime code back to specified module]				
 					if (!(callFrom > pageStartAddress && callFrom < pageStartAddress + PAGE_ALLIGNMENT)) {
 						pageStartAddress = (callFrom / PAGE_ALLIGNMENT)*PAGE_ALLIGNMENT;
+						CheckAndDump(callFrom);
 					}
 
 					LogCall(
@@ -109,6 +123,5 @@ VOID TraceCall(const ADDRINT callFrom, const ADDRINT callTo) {
 		}
 	}
 
-	trace.flush();
 	PIN_UnlockClient();
 }
